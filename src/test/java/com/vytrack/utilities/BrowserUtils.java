@@ -463,7 +463,7 @@ public class BrowserUtils {
         File source = ts.getScreenshotAs(OutputType.FILE);
         // full path to the screenshot location
         String target = System.getProperty("user.dir") + "/test-output/Screenshots/" + name + date + ".png";
-
+        //if screenshot doesn't work try to provide hardcoded path to the folder
         File finalDestination = new File(target);
 
         // save the screenshot to the path given

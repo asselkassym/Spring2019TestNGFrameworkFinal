@@ -1,6 +1,8 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="Login tests">
     <test name="Login Tests">
+        <parameter name="username" value="salesmanager110"></parameter>
+        <parameter name="password" value="UserUser123"></parameter>
         <classes>
             <class name="com.vytrack.tests.components.login_navigation.LoginTests"/>
         </classes>
