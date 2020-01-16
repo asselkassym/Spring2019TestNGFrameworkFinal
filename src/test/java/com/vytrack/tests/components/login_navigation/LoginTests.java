@@ -4,6 +4,7 @@ import com.vytrack.utilities.ConfigurationReader;
 import com.vytrack.utilities.TestBase;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
@@ -37,9 +38,16 @@ public class LoginTests extends TestBase {
 
     @Test
     @Parameters({ "username", "password" }) // get data from data testng.xml
-    public void loginWithParameters(String username, String password) {
+    public void loginWithParameters(@Optional String username, @Optional String password) {
         extentLogger = report.createTest("Login as store manager");
-
+        //@Optional annotation will make Testng paraneter optional
+        //but, if there is no value = you will get null
+        //thus, let's make sure parameters are not null
+        //if so, let's pull credentials from properties
+        if(username ==null){
+            username = ConfigurationReader.getProperty("storemanagerusername");
+            password = ConfigurationReader.getProperty("storemanagerpassword");
+        }
         //we are instantiating page class inside a tests class,
         //because for second test, if we run all tests in a row, driver will have null session
         pages.loginPage().clickRememberMe();
@@ -52,8 +60,8 @@ public class LoginTests extends TestBase {
 
     @Test(dataProvider = "credentials_info") // get data from data provider
     public void loginWithDataProvider(String username, String password) {
-        extentLogger = report.createTest("Login as store manager");
-        System.out.println(username+"  ::  "+password);
+        extentLogger = report.createTest("Login as "+username);
+        extentLogger.info(username+"  ::  "+password);
         //we are instantiating page class inside a tests class,
         //because for second test, if we run all tests in a row, driver will have null session
         pages.loginPage().clickRememberMe();
@@ -63,12 +71,15 @@ public class LoginTests extends TestBase {
         Assert.assertEquals(pages.dashboardPage().getPageSubTitle(), "Dashboard");
         extentLogger.pass("Verified page name: " + pages.dashboardPage().getPageSubTitle());
     }
-
+    //Data provider allows to do DDT (Data Driven testing
+    //same - test - different data set
+    //you can get information from excel file and return it as 2d array
+    //then pass it into data provider, and make test use it
     @DataProvider(name = "credentials_info")
     public static Object[][] credentials() {
         return new Object[][] { { "storemanager85", "UserUser123" },
-                                { "salesmanager110", "UserUser123" }};
-
+                                { "salesmanager110", "UserUser123" },
+                                { "salesmanager133", "UserUser123" }};
     }
 
 
@@ -82,4 +93,9 @@ public class LoginTests extends TestBase {
     }
 
 
+    @Test
+    public void getAttribute(){
+        extentLogger = report.createTest("Just login test");
+        System.out.println(pages.loginPage().userNameElement.getAttribute("class"));
+    }
 }
